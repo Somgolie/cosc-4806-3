@@ -21,6 +21,32 @@ class User {
   public function authenticate($username, $password) {
       $username = strtolower($username);
       $db = db_connect();
+    // Get number of failed attempts in last 60 seconds
+    $stmt = $db->prepare("
+        SELECT COUNT(*) AS fail_count, MAX(time) AS last_fail_time 
+        FROM login_Attempts 
+        WHERE username = :username AND attempt = 0 AND time > (NOW() - INTERVAL 60 SECOND)
+    ");
+    $stmt->bindValue(':username', $username);
+    $stmt->execute();
+    $failData = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    $failCount = $failData['fail_count'] ?? 0;
+    $lastFailTime = $failData['last_fail_time'] ?? null;
+
+    if ($failCount >= 3) {
+        // User is locked out for 60 seconds since last fail
+        $lockoutSeconds = 60;
+        $timeSinceLastFail = time() - strtotime($lastFailTime);
+        $secondsLeft = $lockoutSeconds - $timeSinceLastFail;
+
+        if ($secondsLeft > 0) {
+            $_SESSION['login_message'] = "Too many failed attempts. Please wait {$secondsLeft} seconds before trying again.";
+            header('Location: /login');
+            exit;
+        }
+    }
+    
       $statement = $db->prepare("SELECT * FROM users WHERE username = :name");
       $statement->bindValue(':name', $username);
       $statement->execute();
@@ -39,6 +65,7 @@ class User {
 
           if (isset($_SESSION['failedAuth'])) {
               $_SESSION['failedAuth']++;
+
           } else {
               $_SESSION['failedAuth'] = 1;
           }
