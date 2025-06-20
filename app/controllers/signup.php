@@ -18,7 +18,19 @@ class Signup extends Controller {
         $password = $_POST['password'];
         
         if (!empty($username) && !empty($password)) {
-            ///stuff
+            if (!is_password_strong($password)) {   // Check if password is strong
+                $_SESSION['signup_message'] = "Password must be at least 5 characters and contain a number.";
+            } 
+            elseif ($user->username_exists($username)) { // Check if username already exists
+                $_SESSION['signup_message'] = "Username already taken. Please choose another.";
+            } 
+            else {  // Create user
+                $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+                if ($user->create_user($username, $hashedPassword)) {
+                    header("Location: /login");
+                    exit;
+                }
+        }
         }
         else {
         $_SESSION['signup_message'] = "Please fill in both fields.";
