@@ -23,7 +23,8 @@
             <br>
 		    <button type="submit" class="btn btn-primary">Login</button>
 		</fieldset>
-		</form> 
+		</form>
+			<p><a href='app/views/Signup/index.php'>Create Account Here!</a></p>
 	</div>
 </div>
     <?php require_once 'app/views/templates/footer.php' ?>
