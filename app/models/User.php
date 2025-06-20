@@ -46,5 +46,19 @@ class User {
 			die;
 		}
     }
+  public function username_exists($username) {
+      $db = db_connect();
+      $statement = $db->prepare("SELECT * FROM users WHERE username = :username");
+      $statement->bindValue(':username', strtolower($username));
+      $statement->execute();
+      return $statement->fetch(PDO::FETCH_ASSOC) !== false;
+  }
 
+  public function create_user($username, $hashedPassword) {
+      $db = db_connect();
+      $statement = $db->prepare("INSERT INTO users (username, password) VALUES (:username, :password)");
+      $statement->bindValue(':username', strtolower($username));
+      $statement->bindValue(':password', $hashedPassword);
+      return $statement->execute();
+  }
 }
