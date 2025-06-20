@@ -2,8 +2,10 @@
 
 class Login extends Controller {
 
-    public function index() {		
-	    $this->view('login/index');
+    public function index() {		//add message for invalid login
+			$message = $_SESSION['login_message'] ?? '';
+			unset($_SESSION['login_message']);
+			$this->view('login/index', ['message' => $message]);
     }
     
     public function verify(){

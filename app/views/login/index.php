@@ -1,4 +1,5 @@
 <?php require_once 'app/views/templates/headerPublic.php'?>
+
 <main role="main" class="container">
     <div class="page-header" id="banner">
         <div class="row">
@@ -9,6 +10,11 @@
     </div>
 
 <div class="row">
+	<?php if (!empty($data['message'])): ?>
+			<div class="alert alert-danger">
+					<?= htmlspecialchars($data['message']); ?>
+			</div>
+	<?php endif; ?>
     <div class="col-sm-auto">
 		<form action="/login/verify" method="post" >
 		<fieldset>

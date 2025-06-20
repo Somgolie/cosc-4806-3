@@ -35,18 +35,18 @@ class User {
           exit;
       } else {
           // log bad attempt
-          $this->log_attempt($username, false);
 
-          $_SESSION['login_message'] = "Invalid login, try again.";
 
           if (isset($_SESSION['failedAuth'])) {
               $_SESSION['failedAuth']++;
           } else {
               $_SESSION['failedAuth'] = 1;
           }
-
-          header('Location: /login');
-          exit;
+        $this->log_attempt($username, false);
+        $_SESSION['login_message'] = "Invalid login, try again.";
+        
+        header('Location: /login');
+        exit;
       }
   }
   public function username_exists($username) {
@@ -66,9 +66,15 @@ class User {
   }
   public function log_attempt($username, $result) {
       $db = db_connect();
-      $statement = $db->prepare("INSERT INTO login_Attempts (username, attempt, time) VALUES (:username, :attempt, NOW())");
+      $statement = $db->prepare("INSERT INTO login_Attempts (username, attempt, time) VALUES   (:username, :attempt, NOW())");  
       $statement->bindValue(':username', strtolower($username));
-      $statement->bindValue(':attempt', $result); // 'good' or 'bad'
-      return $statement->execute();
+      $statement->bindValue(':attempt', $result, PDO::PARAM_BOOL);
+      
+      $success = $statement->execute();
+      if (!$success) {
+          $errorInfo = $statement->errorInfo();
+          error_log("Failed to log login attempt: " . implode(" | ", $errorInfo));
+      }
+      return $success;
   }
 }
