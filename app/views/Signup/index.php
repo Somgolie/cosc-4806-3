@@ -1,26 +1,43 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title>Sign Up</title>
-</head>
-<body>
+<?php require_once 'app/views/templates/headerPublic.php'; ?>
 
-  <h1>Create an Account</h1>
+<main role="main" class="container">
+    <div class="page-header" id="banner">
+        <div class="row">
+            <div class="col-lg-12">
+                <h1>Create an Account</h1>
+            </div>
+        </div>
+    </div>
 
-  <!-- Placeholder for future messages -->
-  <?php if (!empty($message)): ?>
-    <p style="color:red;"><?php echo htmlspecialchars($message); ?></p>
-  <?php endif; ?>
+    <div class="row">
+        <div class="col-sm-auto">
+            <?php if (!empty($message)): ?>
+                <div class="alert alert-danger">
+                    <?= htmlspecialchars($message); ?>
+                </div>
+            <?php endif; ?>
 
-  <form action="/signup/create" method="post">
-    <label for="username">Username:</label><br>
-    <input type="text" id="username" name="username" required><br>
+            <form action="/signup/create" method="post">
+                <fieldset>
+                    <div class="form-group">
+                        <label for="username">Username</label>
+                        <input required type="text" class="form-control" name="username" id="username">
+                    </div>
 
-    <label for="password">Password:</label><br>
-    <input type="password" id="password" name="password" required><br><br>
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input required type="password" class="form-control" name="password" id="password">
+                    </div>
+                    <br>
+                    <button type="submit" class="btn btn-success">Sign Up</button>
+                </fieldset>
+            </form>
 
-    <input type="submit" value="Submit">
-  </form> 
+            <br>
 
-</body>
-</html>
+        </div>
+    </div>
+  <?php require_once 'app/views/templates/footer.php'; ?>
+</main>
+
+

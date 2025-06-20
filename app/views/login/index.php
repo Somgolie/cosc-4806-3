@@ -24,8 +24,9 @@
 		    <button type="submit" class="btn btn-primary">Login</button>
 		</fieldset>
 		</form>
+			<br>
 			<a href="/signup">
-				<button type="button">Create Account</button>
+				<button type="button" class="btn btn-success">Create Account</button>
 			</a>
 	</div>
 </div>
