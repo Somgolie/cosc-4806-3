@@ -18,34 +18,37 @@ class User {
       return $rows;
     }
 
-    public function authenticate($username, $password) {
-        /*
-         * if username and password good then
-         * $this->auth = true;
-         */
-		$username = strtolower($username);
-		$db = db_connect();
-        $statement = $db->prepare("select * from users WHERE username = :name;");
-        $statement->bindValue(':name', $username);
-        $statement->execute();
-        $rows = $statement->fetch(PDO::FETCH_ASSOC);
-		
-		if (password_verify($password, $rows['password'])) {
-			$_SESSION['auth'] = 1;
-			$_SESSION['username'] = ucwords($username);
-			unset($_SESSION['failedAuth']);
-			header('Location: /home');
-			die;
-		} else {
-			if(isset($_SESSION['failedAuth'])) {
-				$_SESSION['failedAuth'] ++; //increment
-			} else {
-				$_SESSION['failedAuth'] = 1;
-			}
-			header('Location: /login');
-			die;
-		}
-    }
+  public function authenticate($username, $password) {
+      $username = strtolower($username);
+      $db = db_connect();
+      $statement = $db->prepare("SELECT * FROM users WHERE username = :name");
+      $statement->bindValue(':name', $username);
+      $statement->execute();
+      $user = $statement->fetch(PDO::FETCH_ASSOC);
+
+      if ($user && password_verify($password, $user['password'])) {
+          $_SESSION['auth'] = 1;
+          $_SESSION['username'] = ucwords($username);
+          unset($_SESSION['failedAuth']);
+          $this->log_attempt($username, true);
+          header('Location: /home');
+          exit;
+      } else {
+          // log bad attempt
+          $this->log_attempt($username, false);
+
+          $_SESSION['login_message'] = "Invalid login, try again.";
+
+          if (isset($_SESSION['failedAuth'])) {
+              $_SESSION['failedAuth']++;
+          } else {
+              $_SESSION['failedAuth'] = 1;
+          }
+
+          header('Location: /login');
+          exit;
+      }
+  }
   public function username_exists($username) {
       $db = db_connect();
       $statement = $db->prepare("SELECT * FROM users WHERE username = :username");
@@ -63,9 +66,9 @@ class User {
   }
   public function log_attempt($username, $result) {
       $db = db_connect();
-      $stmt = $db->prepare("INSERT INTO login_log (username, attempt, timestamp) VALUES (:username, :attempt, NOW())");
-      $stmt->bindValue(':username', $username);
-      $stmt->bindValue(':attempt', $result); // 'good' or 'bad'
-      $stmt->execute();
+      $statement = $db->prepare("INSERT INTO login_Attempts (username, attempt, time) VALUES (:username, :attempt, NOW())");
+      $statement->bindValue(':username', strtolower($username));
+      $statement->bindValue(':attempt', $result); // 'good' or 'bad'
+      return $statement->execute();
   }
 }
