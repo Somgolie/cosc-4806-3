@@ -1,12 +1,15 @@
 <?php
 
-class Signup extends Controller{
+class Signup extends Controller {
     public function index() {
-      $message='';
-      $user = $this->model('User');
-      $data = $user->test();
+        $message = '';
+        $user = $this->model('User');
+        $data = $user->test();
 
-        $this->view('home/index');
+        $this->view('Signup/index', [
+            'message' => $message,
+            'data' => $data
+        ]);
         die;
     }
 }
