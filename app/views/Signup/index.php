@@ -11,9 +11,9 @@
 
     <div class="row">
         <div class="col-sm-auto">
-            <?php if (!empty($message)): ?>
+            <?php if (!empty($data['message'])): ?>
                 <div class="alert alert-danger">
-                    <?= htmlspecialchars($message); ?>
+                    <?= htmlspecialchars($data['message']); ?>
                 </div>
             <?php endif; ?>
 
@@ -32,12 +32,8 @@
                     <button type="submit" class="btn btn-success">Sign Up</button>
                 </fieldset>
             </form>
-
-            <br>
-
         </div>
     </div>
-  <?php require_once 'app/views/templates/footer.php'; ?>
+    <?php require_once 'app/views/templates/footer.php'; ?>
 </main>
-
 

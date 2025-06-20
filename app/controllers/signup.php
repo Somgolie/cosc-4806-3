@@ -34,6 +34,7 @@ class Signup extends Controller {
         }
         else {
         $_SESSION['signup_message'] = "Please fill in both fields.";
+
     }
 }
 }
