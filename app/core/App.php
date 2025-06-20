@@ -10,7 +10,7 @@ class App {
     public function __construct() {
         if (isset($_SESSION['auth']) == 1) {
             //$this->method = 'index';
-            $this->controller = 'home';
+            $this->controller = 'index';
         } 
 
         // This will return a broken up URL
