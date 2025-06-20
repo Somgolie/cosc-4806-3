@@ -1,13 +1,12 @@
 <?php
 
-class Signup {
+class Signup extends Controller{
     public function index() {
-        $message = "";
-        require_once '../app/views/Signup/index.php';
-    }
+      $message='';
+      $user = $this->model('User');
+      $data = $user->test();
 
-    public function create() {
-        // Leave empty for now
-        echo "Signup form submitted";
+        $this->view('home/index');
+        die;
     }
 }
