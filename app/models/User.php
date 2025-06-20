@@ -61,4 +61,11 @@ class User {
       $statement->bindValue(':password', $hashedPassword);
       return $statement->execute();
   }
+  public function log_attempt($username, $result) {
+      $db = db_connect();
+      $stmt = $db->prepare("INSERT INTO login_log (username, attempt, timestamp) VALUES (:username, :attempt, NOW())");
+      $stmt->bindValue(':username', $username);
+      $stmt->bindValue(':attempt', $result); // 'good' or 'bad'
+      $stmt->execute();
+  }
 }
